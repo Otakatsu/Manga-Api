@@ -116,7 +116,7 @@ def root(request: Request):
 
 @app.get('/search')
 async def search(q):
-    manga_search = get_search_results(query=search)
+    manga_search = get_search_results(query=q)
     return manga_search
 
 @app.get('/chatbot')
