@@ -145,13 +145,13 @@ async def read(manga, chapter):
     
 
 @app.get('/details')
-def manga_detail(id):
-    manga_details = get_manga_details(mangaid=id)
+def manga_detail(manga):
+    manga_details = get_manga_details(mangaid=manga)
     return manga_details
 
-@app.get('/chapter/pdf')
-def episode_pdf(id, ch):
-    chapurl = f"http://kissmanga.nl/{id}-chapter-{ch}"
+@app.get('/pdfmanga')
+def episode_pdf(manga, chapter):
+    chapurl = f"http://kissmanga.nl/{manga}-chapter-{chapter}"
     chap = read_html(chapurl)   
     i = 1
     Download = f"{id}-Chapter-{ch}"
@@ -178,6 +178,6 @@ def episode_pdf(id, ch):
     
 
 @app.get('/chapter')
-def episode_link(id, ch):
+def chapter_img(manga, chapter):
     manga_chapter = get_manga_chapter(mangaid=id, chapNumber=ch)    
     return manga_chapter
