@@ -112,7 +112,7 @@ def read_html(lol):  # returns list of image links of pages of full chapter [img
 from telegraph.aio import Telegraph
 
 
-def async img2tph(name, link):
+async def img2tph(name, link):
     lmeo = []
     for i in link:
         a_tag = f'<img src="{i}"/>'
