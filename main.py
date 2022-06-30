@@ -109,7 +109,20 @@ def read_html(lol):  # returns list of image links of pages of full chapter [img
             return "Check the host's network Connection"
        
 
+from telegraph.aio import Telegraph
 
+
+def img2tph(name, link):
+    lmeo = []
+    for i in link:
+        a_tag = f'<img src="{i}"/>'
+        lmeo.append(a_tag)
+    k = '\n'.join(lmeo)
+
+    x = Telegraph()
+    x.create_account('MangaVoid')
+    p = x.create_page(name, author_name='MetaVoid', author_url='https://t.me/metavoidsupport', html_content=k)
+    return p['url']
 
 app = FastAPI()
 @app.get('/')
@@ -121,14 +134,14 @@ async def search(q):
     manga_search = get_search_results(query=q)
     return manga_search
 
-@app.get('/chatbot')
-async def chatbot(message: str):
-    data = kuki_request(message)
-    return {'message': data}
+
+@app.get('/details')
+def manga_detail(manga):
+    manga_details = get_manga_details(mangaid=manga)
+    return manga_details
 
 
-
-@app.get('/readmanga')
+@app.get('/manga/read')
 async def read(manga, chapter):
     chapurl = f"http://kissmanga.nl/{manga}-chapter-{chapter}"
     chap = read_html(chapurl)
@@ -141,15 +154,19 @@ async def read(manga, chapter):
     </div>
         '''
     return HTMLResponse(content=x, status_code=200)
+
+
+@app.get('/manga/telegraph')
+async def read(manga, chapter):
+    chapurl = f"http://kissmanga.nl/{manga}-chapter-{chapter}"
+    chap = read_html(chapurl)
+    name = f"{manga} {chapter}"
+    url = await img2tph(name, chap)
+    return url
     
     
 
-@app.get('/details')
-def manga_detail(manga):
-    manga_details = get_manga_details(mangaid=manga)
-    return manga_details
-
-@app.get('/pdfmanga')
+@app.get('/manga/pdf')
 def episode_pdf(manga, chapter):
     chapurl = f"http://kissmanga.nl/{manga}-chapter-{chapter}"
     chap = read_html(chapurl)   
