@@ -1,10 +1,13 @@
 from os import link
 from fastapi import FastAPI, Request, Response
 from bs4 import BeautifulSoup
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 import lxml
+import aiofiles
+import os
 import requests
 import json
+import img2pdf
 import re
 from requests_html import HTMLSession
 import requests
@@ -32,7 +35,6 @@ def get_search_results(query):
             return res_search_list
         except requests.exceptions.ConnectionError:
             return {"status":"404", "reason":"Check the host's network Connection"}
-
 
 def get_manga_details(mangaid):  
         try:
@@ -147,6 +149,33 @@ def manga_detail(id):
     manga_details = get_manga_details(mangaid=id)
     return manga_details
 
+@app.get('/chapter/pdf')
+def episode_pdf(id, ch):
+    chapurl = f"http://kissmanga.nl/{id}-chapter-{ch}"
+    chap = read_html(chapurl)   
+    i = 1
+    Download = f"{id}-Chapter-{ch}"
+    if os.path.exists(Download):
+        return FileResponse(f"{Download}.pdf", media_type="application/pdf")
+    else:
+        os.mkdir(Download)
+        for x in chap:
+            res = requests.get(x).content
+            with open(f"{Download}/{i}.jpg" , "wb") as f:
+                f.write(res)
+            i += 1
+            file_paths = []
+            for root, directories, files in os.walk(f"{Download}"):
+                for filename in files:
+                    filepath = os.path.join(root, filename)
+                    file_paths.append(filepath)
+
+            file_paths.sort(key=lambda f: int(re.sub('\D', '', f)))
+            with open(f"{Download}.pdf" ,"wb") as f:
+                f.write(img2pdf.convert(file_paths)) 
+       
+        return FileResponse(f"{Download}.pdf", media_type="application/pdf")
+    
 
 @app.get('/chapter')
 def episode_link(id, ch):
