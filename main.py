@@ -162,7 +162,7 @@ async def read(manga, chapter):
     chap = read_html(chapurl)
     name = f"{manga} {chapter}"
     url = await img2tph(name, chap)
-    return url
+    return {'link': url}
     
     
 
