@@ -112,7 +112,7 @@ def read_html(lol):  # returns list of image links of pages of full chapter [img
 from telegraph.aio import Telegraph
 
 
-def img2tph(name, link):
+def async img2tph(name, link):
     lmeo = []
     for i in link:
         a_tag = f'<img src="{i}"/>'
@@ -120,9 +120,9 @@ def img2tph(name, link):
     k = '\n'.join(lmeo)
 
     x = Telegraph()
-    x.create_account('MangaVoid')
-    p = x.create_page(name, author_name='MetaVoid', author_url='https://t.me/metavoidsupport', html_content=k)
-    return p['url']
+    await x.create_account('MangaVoid')
+    img = await x.create_page(name, author_name='MetaVoid', author_url='https://t.me/metavoidsupport', html_content=k)
+    return img['url']
 
 app = FastAPI()
 @app.get('/')
