@@ -171,7 +171,7 @@ def episode_pdf(manga, chapter):
     chapurl = f"http://kissmanga.nl/{manga}-chapter-{chapter}"
     chap = read_html(chapurl)   
     i = 1
-    Download = f"{id}-Chapter-{ch}"
+    Download = f"{manga}-Chapter-{chapter}"
     if os.path.exists(Download):
         return FileResponse(f"{Download}.pdf", media_type="application/pdf")
     else:
@@ -196,5 +196,5 @@ def episode_pdf(manga, chapter):
 
 @app.get('/chapter')
 def chapter_img(manga, chapter):
-    manga_chapter = get_manga_chapter(mangaid=id, chapNumber=ch)    
+    manga_chapter = get_manga_chapter(mangaid=manga, chapNumber=chapter)    
     return manga_chapter
