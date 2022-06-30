@@ -12,6 +12,10 @@
     {
       "src": "/(.*)",
       "dest": "main.py"
+    },
+    {
+      "src": "manga/(.*)",
+      "dest": "main.py"
     }
   ]
 }
